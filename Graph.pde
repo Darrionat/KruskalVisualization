@@ -2,9 +2,9 @@ import java.util.Collections;
 import java.util.Comparator;
 
 class Node {
-  float x;
-  float y;
-  int id;
+  private float x;
+  private float y;
+  private int id;
   Node(int id, float x, float y) {
     this.id = id;
     this.x = x;
@@ -12,7 +12,10 @@ class Node {
   }
 
   public void display() {
-    circle(x, y, 3);
+    fill(0);
+    circle(x, y, 5);
+    // fill(255,0,0);
+    // text(id,x+5, y);
   }
 
   public int getId() {
@@ -36,15 +39,29 @@ class Node {
 }
 
 class Edge {
-  Node a;
-  Node b;
+  private Node a;
+  private Node b;
   Edge(Node a, Node b) {
     this.a = a;
     this.b = b;
   }
 
   public void display() {
+    display(color(0));
+  }
+
+  public void display(color c) {
+    fill(c);
     line(a.getX(), a.getY(), b.getX(), b.getY());
+  }
+
+
+  public Node getNodeOne() {
+    return a;
+  }
+
+  public Node getNodeTwo() {
+    return b;
   }
 
   public float weight() {
@@ -63,9 +80,8 @@ class Edge {
 }
 
 class Graph {
-  Node[] nodes;
-  Edge[] distances;
-  ArrayList<Edge> edges;
+  private Node[] nodes;
+  private ArrayList<Edge> edges;
   public Graph(Node[] nodes) {
     this.nodes = nodes;
     edges = new ArrayList<Edge>();
@@ -79,9 +95,8 @@ class Graph {
   }
 
   // Sorts potential edge distances from smallest to largest
+  // Does not save to memory
   Edge[] getSortedDistances() {
-    if (distances != null) 
-      return distances;
     ArrayList<Edge> totalEdges = new ArrayList<Edge>();
 
     for (int i = 0; i < nodes.length - 1; i++) {
@@ -91,7 +106,11 @@ class Graph {
       }
     }
     Collections.sort(totalEdges, new EdgesCompare());
-    return (Edge[]) totalEdges.toArray();
+    Edge[] toReturn = new Edge[totalEdges.size()];
+    for (int i = 0; i < toReturn.length; i++) {
+      toReturn[i] = totalEdges.get(i);
+    }
+    return toReturn;
   }
 
   public void addEdge(Node a, Node b) {
@@ -109,9 +128,9 @@ class Graph {
 
 
 class EdgesCompare implements Comparator<Edge> {
-    @Override
+  @Override
     public int compare(Edge o1, Edge o2) {
-        Float f1 = o1.weight();
-        return f1.compareTo(o2.weight());
-    }
+    Float f1 = o1.weight();
+    return f1.compareTo(o2.weight());
+  }
 }
